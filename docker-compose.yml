@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  minha-api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - APP_ENV=production
+    restart: always
+    networks:
+      - minha-rede
+
+  meu-banco:
+    build:
+      context: ./banco
+      dockerfile: Dockerfile
+    environment:
+      MYSQL_DATABASE: minha_api_db
+      MYSQL_USER: dbuser
+      MYSQL_ROOT_PASSWORD: dbpassword
+    ports:
+      - "3306:3306"
+    volumes:
+      - banco-dados:/var/lib/mysql
+    restart: always
+    networks:
+      - minha-rede
+
+networks:
+  minha-rede:
+    driver: bridge
+
+volumes:
+  banco-dados:
+    driver: local    
